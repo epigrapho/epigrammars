@@ -3,11 +3,14 @@ use std::str::FromStr;
 use crate::{components::parse_tree_component::ParseTreeComponent, owned_tree::OwnedParseTree};
 use bnf::Grammar;
 use leptos::prelude::*;
+use stylance::import_style;
 
 const EXAMPLE_GRAMMAR: &str = r#"
 <number>           ::= <digit> | <digit> <number>
 <digit>            ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
 "#;
+
+import_style!(style, "app.module.scss");
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -64,19 +67,23 @@ pub fn App() -> impl IntoView {
     };
 
     view! {
-        <textarea
-            on:input:target=move |ev| {
-                set_grammar.set(ev.target().value());
-            }
-            prop:value=grammar
-        />
+        <div class=style::grammar_input>
+            <textarea
+                on:input:target=move |ev| {
+                    set_grammar.set(ev.target().value());
+                }
+                prop:value=grammar
+            />
+        </div>
 
-        <input
-            on:input:target=move |ev| {
-                set_input.set(ev.target().value());
-            }
-            prop:value=input
-        />
+        <div class=style::input_input>
+            <textarea
+                on:input:target=move |ev| {
+                    set_input.set(ev.target().value());
+                }
+                prop:value=input
+            />
+        </div>
 
         {
             move || outputs

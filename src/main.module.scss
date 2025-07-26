@@ -1,0 +1,14 @@
+html {
+  height: 100vh;
+  background-color: var(--palette-bg-main); 
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --palette-bg-main: #424141;
+  --palette-bg-light: #505351;
+}

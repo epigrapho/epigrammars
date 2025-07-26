@@ -1,0 +1,43 @@
+.grammar_input-93c5d72 {
+    textarea {
+        height: 100px;
+    }
+}
+
+.input_input-93c5d72 {
+    textarea {
+        height: 100px;
+    }
+} 
+
+.input_input-93c5d72, .grammar_input-93c5d72 {
+    background-color: #424141;
+    padding: 5px;
+
+    textarea {
+        border: none;
+        border-radius: 7px;
+        background-color: var(--palette-bg-light);
+        color: white;
+        width: calc(100% - 20px);
+        min-width: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+        padding: 10px;
+    }
+}
+
+
+html {
+  height: 100vh;
+  background-color: var(--palette-bg-main); 
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --palette-bg-main: #424141;
+  --palette-bg-light: #505351;
+}
