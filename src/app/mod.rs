@@ -1,13 +1,20 @@
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 use crate::{components::parse_tree_component::ParseTreeComponent, owned_tree::OwnedParseTree};
 use bnf::Grammar;
-use leptos::prelude::*;
+use leptos::{logging::log, prelude::*};
 use stylance::import_style;
 
-const EXAMPLE_GRAMMAR: &str = r#"
-<number>           ::= <digit> | <digit> <number>
-<digit>            ::= '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' 
+const EXAMPLE_GRAMMAR: &str = r#"<sentence>   ::= <subject> <space> <verb> <space> <complement> '.'
+ 
+<noun_group> ::= <article> <space> <noun> | <plural_noun>
+<noun>       ::= 'mouse' | 'dog' | 'cat'
+<plural_noun> ::= <noun> 's'
+<verb>       ::= 'eats' | 'search for' | 'look after' | 'is afraid of'
+<subject>    ::= <noun_group>
+<complement> ::= <noun_group>
+<space>      ::= ' '
+<article>    ::= 'the' | 'a'
 "#;
 
 import_style!(style, "app.module.scss");
@@ -15,7 +22,7 @@ import_style!(style, "app.module.scss");
 #[component]
 pub fn App() -> impl IntoView {
     let (grammar, set_grammar) = signal(EXAMPLE_GRAMMAR.to_string());
-    let (input, set_input) = signal("1".to_string());
+    let (input, set_input) = signal("the mouse is afraid of cats.".to_string());
     let (selected_production, set_selected_production) = signal(0);
 
     let parsed_grammar = Memo::new(move |_| match Grammar::from_str(&grammar.get()) {
@@ -49,6 +56,16 @@ pub fn App() -> impl IntoView {
                     .collect::<Vec<_>>()
             })
             .unwrap_or(vec![])
+    });
+
+    let colors = ArcMemo::new(move |_| {
+        let mut hue_by_name = HashMap::new();
+        let len = outputs.get().len() as f32;
+        for (i, output) in outputs.get().into_iter().enumerate() {
+            hue_by_name.insert(output, 360.0 * (i as f32) / len);
+        }
+        log!("{:#?}", hue_by_name);
+        hue_by_name
     });
 
     let parsed_name = move || -> Result<_, String> {
@@ -121,10 +138,11 @@ pub fn App() -> impl IntoView {
                 move || match parsed_name() {
                     Ok(productions) => productions
                         .into_iter()
-                        .map(|production| view! {
-                            <h2>Production</h2>
+                        .enumerate()
+                        .map(|(i, production)| view! {
+                            <h2>Match #{i}</h2>
                             <div class=style::production_container>
-                                <ParseTreeComponent tree=production />
+                                <ParseTreeComponent tree=production production_hues=colors.clone() />
                             </div>
                         }.into_any())
                         .collect::<Vec<_>>(),
