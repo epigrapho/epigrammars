@@ -20,14 +20,14 @@ fn App() -> impl IntoView {
     let (grammar, set_grammar) = signal(EXAMPLE_GRAMMAR.to_string());
     let (input, set_input) = signal("1".to_string());
 
-    let parsed_grammar = move || match Grammar::from_str(&grammar.get()) {
+    let parsed_grammar = Memo::new(move |_| match Grammar::from_str(&grammar.get()) {
         Ok(grammar) => Ok(grammar),
         Err(bnf::Error::ParseError(e)) => Err(format!("Invalid grammar: {:}", e)),
         Err(e) => Err(format!("Failed to parse grammar, unknown error: {:#?}", e)),
-    };
+    });
 
     let parsed_name = move || -> Result<_, String> {
-        let grammar = parsed_grammar()?;
+        let grammar = parsed_grammar.get()?;
         let binding = input.get();
         let values = grammar.parse_input(&binding);
         let values = values.collect::<Vec<_>>();
