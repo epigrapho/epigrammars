@@ -10,15 +10,40 @@
     }
 } 
 
+.header {
+  height: 52px;
+  background-color: #44664f;
+  box-shadow: 0px -1px 5px black;
+  display: flex;
+  flex-direction: row;
+  color: #aec8b6;
+  
+  div {
+    margin: auto 20px;
+  }
+}
+
+.main {
+  padding: 10px;
+}
+
+h2 {
+    margin: 6px 0;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-family: "Arial";
+    font-size: 16px;
+    color: var(--palette-text-header);
+}
+
 .input_input, .grammar_input {
-    background-color: #424141;
     padding: 5px;
 
     textarea {
         border: none;
         border-radius: 7px;
         background-color: var(--palette-bg-light);
-        color: white;
+        color: var(--palette-text);
         width: calc(100% - 20px);
         min-width: calc(100% - 20px);
         max-width: calc(100% - 20px);

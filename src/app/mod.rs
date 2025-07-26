@@ -67,54 +67,68 @@ pub fn App() -> impl IntoView {
     };
 
     view! {
-        <div class=style::grammar_input>
-            <textarea
-                on:input:target=move |ev| {
-                    set_grammar.set(ev.target().value());
-                }
-                prop:value=grammar
-            />
+        <div class=style::header>
+            <div>
+                EpiGramma<span>rs</span>
+            </div>
         </div>
 
-        <div class=style::input_input>
-            <textarea
-                on:input:target=move |ev| {
-                    set_input.set(ev.target().value());
-                }
-                prop:value=input
-            />
-        </div>
+        <div class=style::main>
+            <div class=style::grammar_input>
+                <h2>
+                    Grammar
+                </h2>
+                <textarea
+                    on:input:target=move |ev| {
+                        set_grammar.set(ev.target().value());
+                    }
+                    prop:value=grammar
+                />
+            </div>
 
-        {
-            move || outputs
-                .get()
-                .into_iter()
-                .enumerate()
-                .map(|(i, production)| view! {
-                    <div>
-                        <input type="radio"
-                               id={production.clone()}
-                               name="production"
-                               value={i}
-                               prop:checked=move || i == selected_production.get()
-                               on:input:target=move |_| set_selected_production.set(i) />
-                        <label for={production}>{production.clone()}</label>
-                    </div>
-                })
-                .collect::<Vec<_>>()
-        }
+            <div class=style::input_input>
+                <h2>
+                    Input
+                </h2>
+                <textarea
+                    on:input:target=move |ev| {
+                        set_input.set(ev.target().value());
+                    }
+                    prop:value=input
+                />
+            </div>
 
-        {
-            move || match parsed_name() {
-                Ok(productions) => productions
+            {
+                move || outputs
+                    .get()
                     .into_iter()
-                    .map(|production| view! {
-                        <h2>Production</h2>
-                        <ul><ParseTreeComponent tree=production /></ul>
-                    }.into_any())
-                    .collect::<Vec<_>>(),
-                Err(e) => vec![ view! { <p>"Error" {e}</p> }.into_any() ]
+                    .enumerate()
+                    .map(|(i, production)| view! {
+                        <div>
+                            <input type="radio"
+                                   id={production.clone()}
+                                   name="production"
+                                   value={i}
+                                   prop:checked=move || i == selected_production.get()
+                                   on:input:target=move |_| set_selected_production.set(i) />
+                            <label for={production}>{production.clone()}</label>
+                        </div>
+                    })
+                    .collect::<Vec<_>>()
             }
-        }
+
+            {
+                move || match parsed_name() {
+                    Ok(productions) => productions
+                        .into_iter()
+                        .map(|production| view! {
+                            <h2>Production</h2>
+                            <ul><ParseTreeComponent tree=production /></ul>
+                        }.into_any())
+                        .collect::<Vec<_>>(),
+                    Err(e) => vec![ view! { <p>"Error" {e}</p> }.into_any() ]
+                }
+            }
+        </div>
     }
 }
