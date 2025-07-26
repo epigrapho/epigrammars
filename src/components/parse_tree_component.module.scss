@@ -1,0 +1,25 @@
+.terminal_lhs , .nonterminal_lhs {
+  font-size: 12px;
+  margin-bottom: 3px;
+}
+
+.terminal_node {
+  background-color: var(--palette-primary);
+  padding: 3px;
+  border-radius: 3px;
+  margin: 2px;
+}
+
+.non_terminal_node {
+  flex: 1;
+  background-color: #fff1;
+  padding: 3px;
+  border: solid 1px var(--palette-bg-light);
+  border-radius: 3px;
+  margin-left: 2px;
+
+  > div:last-child {
+    display: flex;
+    flex-direction: row;
+  }
+}

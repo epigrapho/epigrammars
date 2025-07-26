@@ -123,7 +123,9 @@ pub fn App() -> impl IntoView {
                         .into_iter()
                         .map(|production| view! {
                             <h2>Production</h2>
-                            <ul><ParseTreeComponent tree=production /></ul>
+                            <div class=style::production_container>
+                                <ParseTreeComponent tree=production />
+                            </div>
                         }.into_any())
                         .collect::<Vec<_>>(),
                     Err(e) => vec![ view! { <p>"Error" {e}</p> }.into_any() ]
