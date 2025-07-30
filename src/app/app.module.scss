@@ -24,11 +24,11 @@
 }
 
 .main {
-  padding: 10px;
+  padding: 20px;
 }
 
 h2 {
-    margin: 6px 0;
+    margin: 0;
     font-weight: normal;
     text-transform: uppercase;
     font-family: "Arial";
@@ -36,15 +36,31 @@ h2 {
     color: var(--palette-primary);
 }
 
+.production_buttons {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+
+  button {
+    margin-right: 5px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+  }
+}
+
 .production_container {
   display: flex;
   flex-direction: row;
+  margin-top: 10px;
 }
 
 .input_input, .grammar_input {
-    padding: 5px;
+    padding: 0px 0px 10px 0px;
 
     textarea {
+        margin: 10px 0;
         border: none;
         border-radius: 7px;
         background-color: var(--palette-bg-light);
@@ -54,4 +70,11 @@ h2 {
         max-width: calc(100% - 20px);
         padding: 10px;
     }
+}
+
+.alert_error {
+  background-color: #9b3b3b;
+  border-radius: 7px;
+  padding: 7px;
+  color: #ffcdcd;
 }

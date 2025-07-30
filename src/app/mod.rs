@@ -1,8 +1,8 @@
-use std::{collections::HashMap, str::FromStr};
-
 use crate::{components::parse_tree_component::ParseTreeComponent, owned_tree::OwnedParseTree};
 use bnf::Grammar;
 use leptos::{logging::log, prelude::*};
+use std::sync::Arc;
+use std::{collections::HashMap, str::FromStr};
 use stylance::import_style;
 
 const EXAMPLE_GRAMMAR: &str = r#"<sentence>   ::= <subject> <space> <verb> <space> <complement> '.'
@@ -58,14 +58,13 @@ pub fn App() -> impl IntoView {
             .unwrap_or(vec![])
     });
 
-    let colors = ArcMemo::new(move |_| {
+    let colors = Memo::new(move |_| {
         let mut hue_by_name = HashMap::new();
         let len = outputs.get().len() as f32;
         for (i, output) in outputs.get().into_iter().enumerate() {
             hue_by_name.insert(output, 360.0 * (i as f32) / len);
         }
-        log!("{:#?}", hue_by_name);
-        hue_by_name
+        Arc::new(hue_by_name)
     });
 
     let parsed_name = move || -> Result<_, String> {
@@ -75,12 +74,7 @@ pub fn App() -> impl IntoView {
         let values = values
             .map(|r| OwnedParseTree::from_parse_tree(&r))
             .collect::<Vec<_>>();
-
-        if values.is_empty() {
-            Err(format!("No match"))
-        } else {
-            Ok(values)
-        }
+        Ok(values)
     };
 
     view! {
@@ -115,38 +109,52 @@ pub fn App() -> impl IntoView {
                 />
             </div>
 
-            {
-                move || outputs
-                    .get()
-                    .into_iter()
-                    .enumerate()
-                    .map(|(i, production)| view! {
-                        <div>
-                            <input type="radio"
-                                   id={production.clone()}
-                                   name="production"
-                                   value={i}
-                                   prop:checked=move || i == selected_production.get()
-                                   on:input:target=move |_| set_selected_production.set(i) />
-                            <label for={production}>{production.clone()}</label>
-                        </div>
-                    })
-                    .collect::<Vec<_>>()
-            }
+            <div class=style::production_buttons>
+                {
+                    move || outputs
+                        .get()
+                        .into_iter()
+                        .enumerate()
+                        .map(|(i, production)| {
+                            let hue = 360.0 * (i as f32) / (outputs.get().len() as f32);
+                            let active = if i == selected_production.get() { "font-weight: bold" } else { "" };
+                            let style = format!("background-color: hsl({}deg, 16%, 50%);{}", hue, active);
+                            view! {
+                            <div>
+                                <button on:click:target=move |_| set_selected_production.set(i)
+                                        style=style>
+                                    { production }
+                                </button>
+                            </div>
+                        }})
+                        .collect::<Vec<_>>()
+                }
+            </div>
 
             {
                 move || match parsed_name() {
-                    Ok(productions) => productions
+                    Ok(productions) if !productions.is_empty() => productions
                         .into_iter()
                         .enumerate()
                         .map(|(i, production)| view! {
                             <h2>Match #{i}</h2>
                             <div class=style::production_container>
-                                <ParseTreeComponent tree=production production_hues=colors.clone() />
+                                <ParseTreeComponent tree=production production_hues={colors.get()} />
                             </div>
                         }.into_any())
                         .collect::<Vec<_>>(),
-                    Err(e) => vec![ view! { <p>"Error" {e}</p> }.into_any() ]
+                    Ok(_) => vec![ view! {
+                        <div class=style::alert_error>
+                            "No match"
+                        </div>
+                    }.into_any() ],
+                    Err(e) => vec![ view! {
+                        <div class=style::alert_error>
+                            <pre>
+                                {e.replace("\\n", "\n")}
+                            </pre>
+                        </div>
+                    }.into_any() ]
                 }
             }
         </div>

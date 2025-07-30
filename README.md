@@ -13,3 +13,9 @@ Run in developpement
 
 - `trunk serve --open`
 - `stylance --watch .`
+
+## Build
+
+- `rm -r dist`
+- `stylance .`
+- `trunk build --release`
