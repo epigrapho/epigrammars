@@ -2,6 +2,8 @@
 
 A web playground for BNF formal grammars; 
 
+![Screenshot](./docs/screenshot.png)
+
 ## Developpement setup
 
 Requirements
