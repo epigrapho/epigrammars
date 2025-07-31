@@ -16,7 +16,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    
+    - uses: cargo-bins/cargo-binstall@main
+    
+    - name: Install Trunk and Stylance (fast via binstall)
+      run: cargo binstall trunk stylance-cli --no-confirm
 
-    - name: Build
-      run: cargo build --verbose
+    - name: Rebuild styles
+      run: stylance .
+
+    - name: Rebuild app
+      run: trunk build --verbose
+
+    - name: Check output
+      run: ls -la dist
 
