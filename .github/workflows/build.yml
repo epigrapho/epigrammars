@@ -1,0 +1,59 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Add wasm target
+      run: rustup target add wasm32-unknown-unknown
+    
+    - uses: cargo-bins/cargo-binstall@main
+    
+    - name: Install Trunk and Stylance (fast via binstall)
+      run: cargo binstall trunk stylance-cli --no-confirm
+
+    - name: Rebuild styles
+      run: stylance .
+
+    - name: Rebuild app
+      run: trunk build --verbose
+
+    - name: Check output
+      run: ls -la dist
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+    
+    - name: Upload dist as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: dist
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4    
+
