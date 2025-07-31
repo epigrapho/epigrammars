@@ -40,7 +40,7 @@ jobs:
       run: stylance .
 
     - name: Rebuild app
-      run: trunk build --verbose
+      run: trunk build --verbose --release --public-url /epigrammars/
 
     - name: Check output
       run: ls -la dist
