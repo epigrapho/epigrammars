@@ -4,6 +4,10 @@ A web playground for BNF formal grammars;
 
 ![Screenshot](./docs/screenshot.png)
 
+## Online playground
+
+Online playground can be accessed on [epigrammars.epigrapho.com](https://epigrammars.epigrapho.com/)
+
 ## Developpement setup
 
 Requirements
